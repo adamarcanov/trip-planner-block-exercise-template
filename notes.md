@@ -1,10 +1,11 @@
-1. collect multiplicated helper functions from TripCounter.js and "preview.js" and store them in one file
+## things done
+1. collected multiplicated helper functions from TripCounter.js and "preview.js" and store them in one file
 
 2. changed preview.js filename to TripCounterPreview.js and function name from TripCounter to TripCounterPreview for more clear view in files composition
 
-3. refactoring getTimeInfoColorClass by replacing if/else chain with object mapping and single threshold check
+3. refactored getTimeInfoColorClass by replacing if/else chain with object mapping and single threshold check
 
-4. refactoring encouragementAreaClasses similar to getTimeInfoColorClass + pushing classes to one array on many conditions that are true at same time, this could go easly wrong
+4. refactored encouragementAreaClasses similar to getTimeInfoColorClass + pushing classes to one array on many conditions that are true at same time, this could go easly wrong
 
 5. if no more time is left there's no need to continue the interval in the background, also im not sure when timer is working on 1 second interval if it need to update each 500ms, changed to 1000ms
 
