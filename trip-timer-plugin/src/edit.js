@@ -28,7 +28,7 @@ import { useState } from "react";
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
 import "./editor.scss";
-import TimerPreview from "./preview";
+import TripCounterPreview from "./TripCounterPreview";
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -73,7 +73,7 @@ export default function Edit({ attributes, setAttributes }) {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<TimerPreview
+			<TripCounterPreview
 				tripName={tripName}
 				tripTime={tripTime}
 				setTripName={updateTitle}

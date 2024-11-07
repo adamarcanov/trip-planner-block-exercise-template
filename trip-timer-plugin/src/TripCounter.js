@@ -2,39 +2,35 @@
 
 import { useState, useEffect } from "react";
 
+import {
+	calculateSecondsLeft,
+    getTimeInfoColorClass,
+    niceHumanTime,
+    calculateTimeLeft,
+	encouragementAreaClasses,
+    encouragementThingsToSay
+} from './utils.js'
+
 export default function TripCounter({ tripName, tripTime }) {
+	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(tripTime));
+	const [secondsLeft, setSecondsLeft] = useState(calculateSecondsLeft(tripTime));
 	const [newTaskText, setNewTaskText] = useState('');
     const [tasks, setTasks] = useState([]);
-	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(tripTime));
-	const [secondsLeft, setSecondsLeft] = useState(
-		calculateSecondsLeft(tripTime),
-	);
-	const encouragement = "Let's go!";
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setTimeLeft(calculateTimeLeft(tripTime));
-			setSecondsLeft(calculateSecondsLeft(tripTime));
-		}, 500);
-		return () => {
-			clearInterval(interval);
-		};
+			const calculatedTimeLeft = calculateTimeLeft(tripTime)
+			const calculatedSecondsLeft = calculateSecondsLeft(tripTime) 
+            
+			// if no time left, clear interval
+			if (calculatedSecondsLeft <= 0) clearInterval(interval)
+
+			setTimeLeft(calculatedTimeLeft);
+			setSecondsLeft(calculatedSecondsLeft);
+		}, 1000);
+
+		return () => clearInterval(interval)
 	}, [tripTime]);
-
-	function encouragementAreaClasses() {
-		const classes = ["encouragementArea"];
-		if (secondsLeft < 60) {
-			classes.push("encouragementAreaRed");
-		}
-		if (secondsLeft < 300) {
-			classes.push("encouragementAreaYellow");
-		}
-		if (secondsLeft >= 300) {
-			classes.push("encouragementAreaGreen");
-		}
-
-		return classes.join(" ");
-	}
 
 	function checkEnterKey(event) {
         if (event.key && event.key === 'Enter') {
@@ -103,75 +99,10 @@ export default function TripCounter({ tripName, tripTime }) {
                     />
                     <button onClick={addNewTask}>+</button>
                 </div>
-                <div className={encouragementAreaClasses()}>
-                    {encouragement}
+                <div className={encouragementAreaClasses(secondsLeft)}>
+                    {encouragementThingsToSay(secondsLeft)}
                 </div>
             </div>
         </div>
 	);
-}
-
-function calculateSecondsLeft(time) {
-	const departureTime = new Date();
-	const currentTime = new Date();
-
-	const [hours, minutes] = time.split(":");
-
-	departureTime.setHours(hours);
-	departureTime.setMinutes(minutes);
-	departureTime.setSeconds(0);
-
-	return Math.floor((departureTime - currentTime) / 1000); // millis to seconds
-}
-
-function getTimeInfoColorClass(secondsLeft) {
-	if (secondsLeft < 60) {
-		return " timeInfoRed";
-	} else if (secondsLeft < 300) {
-		return " timeInfoYellow";
-	} else {
-		return " timeInfoGreen";
-	}
-}
-
-function niceHumanTime(time) {
-	const now = new Date();
-
-	const [hours, minutes] = time.split(":");
-
-	now.setHours(hours);
-	now.setMinutes(minutes);
-
-	return now.toLocaleString("en-us", {
-		hour: "numeric",
-		minute: "numeric",
-		hour12: true,
-	});
-}
-
-function calculateTimeLeft(time) {
-	const now = new Date();
-	const then = new Date();
-
-	const [hours, minutes] = time.split(":");
-
-	now.setHours(hours);
-	now.setMinutes(minutes);
-	now.setSeconds(0);
-
-	let secondsLeft = (now - then) / 1000; // millis
-
-	if (secondsLeft > 3600) {
-		let hours = Math.floor(secondsLeft / 3600);
-		let minutes = Math.floor((secondsLeft % 3600) / 60);
-
-		return `${hours} Hours and ${minutes} minutes`;
-	} else if (secondsLeft > 60) {
-		let minutes = Math.floor(secondsLeft / 60);
-		let seconds = Math.floor(secondsLeft % 60);
-
-		return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-	}
-
-	return `${secondsLeft} SECONDS`;
 }
